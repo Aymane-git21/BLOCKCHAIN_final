@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Documentation Blockchain</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+</head>
+<body class="is-preload">
+    <div id="wrapper">
+        <!-- Header -->
+        <header id="header">
+            <a href="index.html" class="logo">𝓯𝓻𝓮𝓪𝓴𝔂CHAIN</a>
+        </header>
+
+        <!-- Nav -->
+        <nav id="nav">
+            <ul class="links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="ECDSA.html">ECDSA</a></li>
+                <li><a href="SHA256.html">SHA256</a></li>
+                <li><a href="blockchain_display.html">Blockchain</a></li>
+                <li class="active"><a href="documentation.html">Documentation</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <div id="main" class="box">
+            <h1>Documentation sur la Blockchain</h1>
+            <h2>Cours 1</h2>
+            <p>La blockchain est une technologie de partage et de stockage de données, transparente, sécurisée, et décentralisée.</p>
+            <p>Un algorithme de consensus est utilisé pour choisir le nœud qui va enregistrer et valider la transaction.</p>
+            
+            <h2>Cours 2</h2>
+            <h3>Adresse Bitcoin :</h3>
+            <ul>
+                <li>Clé privée : une suite de 256 bits (généralement représentée en hexadécimal).</li>
+                <li>Clé publique : issue de la clé privée via un algorithme cryptographique.</li>
+            </ul>
+            
+            <h3>Réseau Bitcoin :</h3>
+            <p>Le réseau Bitcoin fonctionne en P2P. Chaque nœud relaie la transaction à ses pairs, qui la stockent dans leur mempool.</p>
+            
+            <h3>Vérification des nœuds :</h3>
+            <ul>
+                <li>Pas de double dépense.</li>
+                <li>Signature correcte.</li>
+                <li>Frais suffisants.</li>
+            </ul>
+            
+            <h3>Structure d'un bloc :</h3>
+            <h4>Header :</h4>
+            <ul>
+                <li>Version</li>
+                <li>Timestamp</li>
+                <li>Merkle root</li>
+                <li>Difficulty</li>
+                <li>Previous block header hash</li>
+                <li>Nonce</li>
+                <li>Bits (target)</li>
+            </ul>
+            <h4>Body :</h4>
+            <ul>
+                <li>Transaction count</li>
+                <li>Coinbase transaction</li>
+                <li>Transactions...</li>
+            </ul>
+            <p>Seul le header est haché pour trouver la solution finale.</p>
+            
+            <!-- Table -->
+            <h2>Table</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Algo</th><th>Blockchain</th><th>Fonctionnement</th><th>Pros</th><th>Cons</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Proof of Work</td><td>Bitcoin</td><td>Résolution d'un problème mathématique</td><td>Grande sécurité, décentralisation</td><td>Énergivore, faible scalabilité</td>
+                        </tr>
+                        <tr>
+                            <td>Proof of Stake</td><td>Ethereum</td><td>Verrouillage des cryptos</td><td>Non énergivore, rapide</td><td>Centralisation, moins sécurisé</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h2>Fungible Tokens (FT)</h2>
+            <ul>
+                <li>Interchangeables et divisibles</li>
+                <li>Norme ERC-20 sur Ethereum</li>
+                <li>Exemples : Bitcoin, Ethereum, Stablecoins</li>
+            </ul>
+            
+            <h2>Non-Fungible Tokens (NFT)</h2>
+            <ul>
+                <li>Unicité garantie par un identifiant unique</li>
+                <li>Normes : ERC-721, ERC-1155</li>
+                <li>Exemples : œuvres d’art numériques, objets de collection</li>
+            </ul>
+            
+            <h2>Oracles</h2>
+            <p>Services qui collectent et stockent des données nécessaires aux smart contracts.</p>
+            <p>Problèmes potentiels :</p>
+            <ul>
+                <li>Échec de collecte de données.</li>
+                <li>Introduction d'informations erronées.</li>
+            </ul>
+            <p>Solutions :</p>
+            <ul>
+                <li>Oracles prouvablement honnêtes.</li>
+                <li>Oracles basés sur le consensus.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

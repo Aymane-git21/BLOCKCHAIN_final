@@ -1,0 +1,679 @@
+sex copy.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Visualizer</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        /* Custom styles to integrate blockchain visualizer with Massively template */
+        :root {
+            --primary-color: #212931;
+            --secondary-color: #18bfef;
+            --tertiary-color: #f2849e;
+            --background-color: #f5f5f5;
+            --block-color: #ffffff;
+            --text-color: #212931;
+        }
+        
+        .blockchain-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-box {
+            background-color: var(--block-color);
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wallet {
+            background-color: var(--block-color);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wallet-name {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .wallet-balance {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .public-key {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #666;
+            word-break: break-all;
+        }
+        
+        .transaction-form {
+            background-color: var(--block-color);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .block {
+            background-color: var(--block-color);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .block-number {
+            font-weight: bold;
+        }
+        
+        .block-timestamp {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .hash-info {
+            background-color: var(--background-color);
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 3px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        
+        .hash-label {
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        
+        .transaction-info {
+            border-top: 1px solid #eee;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .amount {
+            font-weight: bold;
+            color: var(--tertiary-color);
+        }
+        
+        .transaction-details {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 0.25rem;
+            font-size: 0.9rem;
+        }
+        
+        .transaction-details dt {
+            color: #666;
+        }
+        
+        .transaction-details dd {
+            font-family: monospace;
+        }
+        
+        .mining-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--tertiary-color);
+            margin-right: 0.5rem;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        .mining-panel {
+            margin-bottom: 2rem;
+        }
+        
+        .mining-status {
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+        
+        .connection-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            margin-right: 0.5rem;
+        }
+
+        .blockchain-blocks {
+            margin-top: 2rem;
+        }
+
+        #main > section {
+            margin-bottom: 2rem;
+        }
+        
+        /* Mempool specific styles */
+        .mempool-container {
+            background-color: var(--block-color);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mempool-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            background-color: var(--background-color);
+            padding: 0.75rem;
+            border-radius: 4px;
+        }
+        
+        .mempool-stat {
+            font-size: 0.9rem;
+        }
+        
+        .mempool-txs {
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .mempool-actions {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .transaction {
+            background-color: var(--background-color);
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            border-radius: 4px;
+        }
+        
+        .transaction-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .block-transactions {
+            margin-top: 1rem;
+        }
+
+        /* Mining difficulty styles */
+        .mining-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .mining-reward {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background-color: var(--background-color);
+            padding: 0.75rem;
+            border-radius: 5px;
+        }
+        
+        .mining-difficulty-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .mining-difficulty-display {
+            background-color: var(--background-color);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .difficulty-explained {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .hashrate-display {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+        }
+
+        .halving-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .halving-progress {
+            margin-top: 0.5rem;
+            height: 6px;
+            background-color: #eee;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .halving-progress-bar {
+            height: 100%;
+            background-color: var(--tertiary-color);
+            width: 0%; /* Will be set via JavaScript */
+        }
+
+        /* Ajouter à vos styles existants */
+        .priority {
+            border-left: 3px solid #4caf50;
+        }
+
+        .priority-badge {
+            background-color: #4caf50;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+
+        .fee-explanation {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+
+        .mempool-stat {
+            font-size: 0.9rem;
+        }
+
+        .transaction-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <!-- Wrapper -->
+    <div id="wrapper" class="fade-in">
+        <!-- Intro -->
+        <div id="intro">
+            <h1>Blockchain Visualizer</h1>
+            <p>Explore the inner workings of a simple blockchain</p>
+        </div>
+
+        <!-- Header -->
+        <header id="header">
+            <a href="index.html" class="logo">𝓯𝓻𝓮𝓪𝓴𝔂CHAIN</a>
+        </header>
+
+        <!-- Nav -->
+        <nav id="nav">
+            <ul class="links">
+                <li><a href="index.html">Home</a></li>
+                <li class="active"><a href="sex copy.html">Blockchain Visualizer</a></li>
+                <li><a href="SHA256.html">SHA256</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main -->
+        <div id="main">
+            <!-- Connection Status -->
+            <section class="post">
+                <div class="connection-status">
+                    <span class="status-indicator"></span>
+                    <span>Connected to local blockchain node</span>
+                </div>
+                
+                <!-- Blockchain Stats -->
+                <div class="blockchain-stats">
+                    <div class="stat-box">
+                        <h3>Blocks</h3>
+                        <div id="block-count">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <h3>Transactions</h3>
+                        <div id="tx-count">0</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Mempool Section -->
+            <section class="post">
+                <header class="major">
+                    <h2>Mempool</h2>
+                    <p>Pending transactions waiting to be mined</p>
+                </header>
+                <div id="mempool-container" class="mempool-container">
+                    <div id="mempool-stats" class="mempool-stats">
+                        <div class="mempool-stat">
+                            <strong>Transactions:</strong> 0
+                        </div>
+                        <div class="mempool-stat">
+                            <strong>Total Value:</strong> 0.00 BTC
+                        </div>
+                    </div>
+                    <div id="mempool-txs" class="mempool-txs"></div>
+                    <div class="mempool-actions">
+                        <button id="mine-all-btn" class="button primary">Mine All Transactions</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Wallets Section -->
+            <section class="post">
+                <header class="major">
+                    <h2>Wallets</h2>
+                    <p>Manage your digital assets</p>
+                </header>
+                
+                <div id="wallets-container"></div>
+                
+                <button id="create-wallet" class="button primary">Create New Wallet</button>
+            </section>
+            
+            <!-- Transaction Section -->
+            <section class="post">
+                <header class="major">
+                    <h2>Create Transaction</h2>
+                    <p>Send funds between wallets</p>
+                </header>
+                
+                <div class="transaction-form">
+                    <div class="form-group">
+                        <label for="from-wallet">From Wallet:</label>
+                        <select id="from-wallet" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="to-wallet">To Wallet:</label>
+                        <select id="to-wallet" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount (BTC):</label>
+                        <input type="number" id="amount" class="form-control" min="0.1" step="0.1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="tx-fees">Transaction Fees (BTC):</label>
+                        <input type="number" id="tx-fees" class="form-control" min="0" step="0.01" value="0.01">
+                        <div class="fee-explanation">Higher fees increase the chance of your transaction being included in the next block.</div>
+                    </div>
+                    <button id="send-transaction" class="button primary">Send Transaction</button>
+                </div>
+                
+                <div id="transactions-container"></div>
+            </section>
+            
+            <!-- Mining Section -->
+            <section class="post">
+                <header class="major">
+                    <h2>Mining</h2>
+                    <p>Secure the network and earn rewards</p>
+                </header>
+                
+                <div class="mining-panel">
+                    <!-- Mining Difficulty Controls -->
+                    <div class="form-group">
+                        <label for="mining-difficulty">Mining Difficulty:</label>
+                        <div class="mining-difficulty-controls">
+                            <input type="range" id="mining-difficulty" min="1" max="6" value="2" class="difficulty-slider">
+                            <div class="mining-difficulty-display">
+                                Current: <span id="current-difficulty">2</span>
+                            </div>
+                        </div>
+                        <div class="difficulty-explained">
+                            Higher difficulty requires more computational work to find a valid block hash.
+                        </div>
+                    </div>
+                    
+                    <!-- Mining Reward Info -->
+                    <div id="mining-reward" class="mining-reward">
+                        <div>Mining Reward: <strong>50 BTC</strong></div>
+                        <div class="halving-info">Next halving in <strong>10</strong> blocks</div>
+                        <div class="halving-progress">
+                            <div class="halving-progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mining Wallet Selection -->
+                    <div class="form-group">
+                        <label for="mining-wallet">Mine to Wallet:</label>
+                        <select id="mining-wallet" class="form-control"></select>
+                    </div>
+                    
+                    <!-- Mining Status -->
+                    <div class="mining-status">
+                        <div id="mining-indicator" class="mining-indicator" style="display: none;"></div>
+                        <span id="mining-status-text">Ready to mine</span>
+                    </div>
+                    
+                    <button id="mine-btn" class="button primary">Mine Next Block</button>
+                </div>
+            </section>
+            
+            <!-- Blockchain Section -->
+            <section class="post">
+                <header class="major">
+                    <h2>Blockchain</h2>
+                    <p>Immutable ledger of all transactions</p>
+                </header>
+                
+                <div id="blockchain-container" class="blockchain-blocks">
+                    <!-- Blocks will be added here dynamically -->
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer id="footer">
+            <section class="split contact">
+                <section>
+                    <h3>Educational Purpose</h3>
+                    <p>This is a simplified blockchain simulator for educational purposes only. It does not represent a real cryptocurrency or financial system.</p>
+                </section>
+            </section>
+        </footer>
+
+        <!-- Copyright -->
+        <div id="copyright">
+            <ul><li>&copy; FREAKYCHAINS INC.</li></ul>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrollex.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/sha256.js"></script>
+    <script src="assets/js/blockchain.js"></script>
+    <script>
+        // Additional UI interaction for the wallet/transaction system
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up transaction UI
+            const fromWalletSelect = document.getElementById('from-wallet');
+            const toWalletSelect = document.getElementById('to-wallet');
+            const amountInput = document.getElementById('amount');
+            const sendButton = document.getElementById('send-transaction');
+            const miningWalletSelect = document.getElementById('mining-wallet');
+            const difficultySlider = document.getElementById('mining-difficulty');
+            
+            function updateWalletSelectors() {
+                fromWalletSelect.innerHTML = '';
+                toWalletSelect.innerHTML = '';
+                miningWalletSelect.innerHTML = '';
+                
+                wallets.forEach((wallet, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${wallet.name} (${wallet.balance} BTC)`;
+                    
+                    fromWalletSelect.appendChild(option.cloneNode(true));
+                    toWalletSelect.appendChild(option.cloneNode(true));
+                    miningWalletSelect.appendChild(option);
+                });
+            }
+            
+            // Update wallet selectors when wallets are updated
+            const originalUpdateWallets = updateWallets;
+            updateWallets = function() {
+                originalUpdateWallets();
+                updateWalletSelectors();
+            };
+            
+            // Send transaction
+            sendButton?.addEventListener('click', function() {
+                const fromIndex = fromWalletSelect.value;
+                const toIndex = toWalletSelect.value;
+                const amount = parseFloat(amountInput.value);
+                
+                if (fromIndex === toIndex) {
+                    alert('Cannot send to the same wallet!');
+                    return;
+                }
+                
+                if (isNaN(amount) || amount <= 0) {
+                    alert('Please enter a valid amount!');
+                    return;
+                }
+                
+                const sender = wallets[fromIndex];
+                const recipient = wallets[toIndex];
+                
+                const success = sender.addTransaction(amount, recipient.publicKey);
+                if (success) {
+                    amountInput.value = "1";
+                }
+            });
+            
+            // Mining difficulty slider
+            difficultySlider?.addEventListener('input', function() {
+                const difficulty = parseInt(this.value);
+                document.getElementById('current-difficulty').textContent = difficulty;
+                Chain.instance.setDifficulty(difficulty);
+            });
+            
+            // Mining animation
+            document.getElementById('mine-btn')?.addEventListener('click', async function() {
+                const activeWalletIndex = miningWalletSelect.value;
+                const minerAddress = wallets[activeWalletIndex]?.publicKey;
+                
+                await Chain.instance.minePendingTransactions(minerAddress);
+            });
+            
+            // Update mining difficulty display
+            if (difficultySlider) {
+                difficultySlider.value = Chain.instance.difficulty;
+                document.getElementById('current-difficulty').textContent = Chain.instance.difficulty;
+            }
+
+            // Update the reward info including progress bar
+            const originalUpdateRewardInfo = updateRewardInfo;
+            updateRewardInfo = function() {
+                originalUpdateRewardInfo();
+                
+                // Update progress bar
+                const progressBar = document.querySelector('.halving-progress-bar');
+                if (progressBar) {
+                    const blocksUntilHalving = Chain.instance.blocksUntilHalving;
+                    const halvingInterval = Chain.instance.halvingInterval;
+                    const progressPercentage = ((halvingInterval - blocksUntilHalving) / halvingInterval) * 100;
+                    progressBar.style.width = `${progressPercentage}%`;
+                }
+            };
+
+            // Add a mining event listener to update reward info
+            document.getElementById('mine-btn')?.addEventListener('click', function() {
+                const activeWalletIndex = miningWalletSelect.value;
+                const minerAddress = wallets[activeWalletIndex]?.publicKey;
+                
+                Chain.instance.minePendingTransactions(minerAddress).then(() => {
+                    updateRewardInfo();
+                });
+            });
+        });
+    </script>
+    <script>
+        // Modifier l'écouteur d'événement pour le bouton d'envoi
+        sendButton?.addEventListener('click', function() {
+            const fromIndex = fromWalletSelect.value;
+            const toIndex = toWalletSelect.value;
+            const amount = parseFloat(amountInput.value);
+            const fees = parseFloat(document.getElementById('tx-fees').value) || 0;
+            
+            if (fromIndex === toIndex) {
+                alert('Cannot send to the same wallet!');
+                return;
+            }
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount!');
+                return;
+            }
+            
+            if (isNaN(fees) || fees < 0) {
+                alert('Please enter valid fees (0 or positive value)!');
+                return;
+            }
+            
+            const sender = wallets[fromIndex];
+            const recipient = wallets[toIndex];
+            
+            const success = sender.addTransaction(amount, recipient.publicKey, fees);
+            if (success) {
+                amountInput.value = "1";
+                document.getElementById('tx-fees').value = "0.01";
+            }
+        });
+    </script>
+</body>
+</html>

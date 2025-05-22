@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<!--
+	𝓯𝓻𝓮𝓪𝓴𝔂CHAIN by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>ECDSA </title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class="logo">𝓯𝓻𝓮𝓪𝓴𝔂CHAIN</a>
+					</header>
+
+				<!-- Nav -->
+				<nav id="nav">
+					<ul class="links">
+						<li><a href="index.html">This is 𝓯𝓻𝓮𝓪𝓴𝔂chain</a></li>
+						<li class="active"><a href="ECDSA.html">ECDSA</a></li>
+						<li><a href="SHA256.html">SHA256</a></li>
+						<li><a href="blockchain_display.html">blockchain</a></li>
+						<li><a href="documentation.html">Documentation</a></li>
+
+					</ul>
+
+				</nav>
+
+				<!-- Main -->
+				<div id="main" class="box">
+					<ul class="actions special">
+						<li><button class="button primary" onclick="generateKeys()">Generate Keys</button></li>
+						<li><button class="button" onclick="signMessage()">Sign Message</button></li>
+						<li><button class="button" onclick="verifySignature()">Verify Signature</button></li>
+					</ul>
+					
+					<div class="box">
+						<p><strong>Private Key:</strong></p>
+						<pre id="privateKey" class="box"></pre>
+						<p><strong>Public Key:</strong></p>
+						<pre id="publicKey" class="box"></pre>
+					</div>
+					
+					<div class="box">
+						<p><strong>Message:</strong></p>
+						<input type="text" id="message" value="Hello, ECDSA!" class="input" />
+						<p><strong>Signature:</strong></p>
+						<pre id="signature" class="box"></pre>
+						<p><strong>Verification:</strong></p>
+						<pre id="verification" class="box"></pre>
+					</div>
+				</div>
+			</div>
+			<script>
+				let keyPair, signature;
+		
+				async function generateKeys() {
+					keyPair = await window.crypto.subtle.generateKey(
+						{
+							name: "ECDSA",
+							namedCurve: "P-256"
+						},
+						true,
+						["sign", "verify"]
+					);
+					
+					const exportedPrivateKey = await window.crypto.subtle.exportKey("jwk", keyPair.privateKey);
+					const exportedPublicKey = await window.crypto.subtle.exportKey("jwk", keyPair.publicKey);
+					
+					document.getElementById("privateKey").innerText = JSON.stringify(exportedPrivateKey, null, 2);
+					document.getElementById("publicKey").innerText = JSON.stringify(exportedPublicKey, null, 2);
+					
+					alert("Keys generated successfully!");
+				}
+		
+				async function signMessage() {
+					if (!keyPair) return alert("Generate keys first!");
+					const message = new TextEncoder().encode(document.getElementById("message").value);
+					signature = await window.crypto.subtle.sign(
+						{
+							name: "ECDSA",
+							hash: "SHA-256"
+						},
+						keyPair.privateKey,
+						message
+					);
+					document.getElementById("signature").innerText = btoa(String.fromCharCode(...new Uint8Array(signature)));
+				}
+		
+				async function verifySignature() {
+					if (!keyPair || !signature) return alert("Generate keys and sign a message first!");
+					const message = new TextEncoder().encode(document.getElementById("message").value);
+					const isValid = await window.crypto.subtle.verify(
+						{
+							name: "ECDSA",
+							hash: "SHA-256"
+						},
+						keyPair.publicKey,
+						signature,
+						message
+					);
+					document.getElementById("verification").innerText = isValid ? "Valid Signature ✅" : "Invalid Signature ❌";
+				}
+			</script>
+
+	
+
+	</body>
+</html>
